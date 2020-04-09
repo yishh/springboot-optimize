@@ -1,0 +1,29 @@
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+spring:
+  application:
+    name: spring-boot-admin-server
+  boot:
+    admin:
+      context-path: /springboot
+
+server:
+  port: 8080
+
+spring.mail.host: smtp.qq.com
+spring.mail.username: xx@qq.com
+spring.mail.password: xx
+spring.mail.properties.mail.smtp.auth: true
+spring.mail.properties.mail.smtp.starttls.enable: true
+spring.mail.properties.mail.smtp.starttls.required: true
+# 发送给谁
+spring.boot.admin.notify.mail.to: xx@zhexinit.com
+# 是谁发送出去的
+spring.boot.admin.notify.mail.from: xx@qq.com

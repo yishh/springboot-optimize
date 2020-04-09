@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: springboot-admin-config
+data:
+  spring.mail.host: smtp.exmail.qq.com
+  spring.mail.protocol: "smtp"
+  spring.mail.username: zabbix@zhexinit.com
+  spring.mail.password: NKarQkrdBt5jmgPPTMzZ
+  spring.mail.properties.mail.smtp.auth: "true"
+  spring.mail.properties.mail.smtp.ssl.enable: "true"
+  spring.mail.properties.mail.smtp.port: "465"
+  spring.mail.properties.mail.smtp.starttls.enable: "true"
+  spring.mail.properties.mail.smtp.starttls.required: "true"
+  spring.mail.properties.mail.smtp.ssl.socketFactory: "sf"
+  spring.boot.admin.notify.mail.to: ""
+  spring.boot.admin.notify.mail.from: zabbix@zhexinit.com
+  spring.boot.admin.discovery.ignored-services: "anhui-h5, admin-sina-website"
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: springboot-admin
+spec:
+  replicas: 1
+  selector:                 #注意要有
+    matchLabels:
+      app: springboot-admin
+  template:
+    metadata:
+      labels:
+        app: springboot-admin
+    spec:
+      containers:
+        - name: springboot-admin
+          image: registry.cn-hangzhou.aliyuncs.com/zhexinit/springboot-admin:BUILD_ID
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: springboot-admin-config
+          resources:
+            limits:
+              memory: 1024Mi
+            requests:
+              memory: 512Mi
+      imagePullSecrets:
+        - name: aliyun-docker-secret
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-admin
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30102
+  selector:
+    app: springboot-admin
